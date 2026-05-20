@@ -27,6 +27,17 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'success', message: 'Gym Monitoring API is running' });
 });
 
+// Database connectivity check
+const prisma = require('./config/prisma');
+app.get('/api/health/db', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({ status: 'success', message: 'Database connection is healthy' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: 'Database connection failed', error: error.message });
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
