@@ -30,10 +30,15 @@ app.get('/api/health', (req, res) => {
 // Database connectivity check
 const prisma = require('./config/prisma');
 app.get('/api/health/db', async (req, res) => {
+  console.log('API health/db endpoint called');
+  console.time('DBQueryRaw');
   try {
     await prisma.$queryRaw`SELECT 1`;
+    console.timeEnd('DBQueryRaw');
     res.status(200).json({ status: 'success', message: 'Database connection is healthy' });
   } catch (error) {
+    console.timeEnd('DBQueryRaw');
+    console.error('DB Connection error details:', error);
     res.status(500).json({ status: 'error', message: 'Database connection failed', error: error.message });
   }
 });

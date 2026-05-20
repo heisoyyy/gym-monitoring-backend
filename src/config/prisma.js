@@ -1,3 +1,5 @@
+console.log('Prisma initialization started...');
+console.time('PrismaInit');
 const { PrismaClient } = require('@prisma/client');
 const { PrismaMariaDb } = require('@prisma/adapter-mariadb');
 const { URL } = require('url');
@@ -7,6 +9,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const dbUrl = new URL(process.env.DATABASE_URL);
+console.log('Parsed database host:', dbUrl.hostname);
 
 const sslOptions = dbUrl.hostname !== 'localhost' && dbUrl.hostname !== '127.0.0.1'
   ? { rejectUnauthorized: false }
@@ -23,5 +26,6 @@ const adapter = new PrismaMariaDb({
 });
 
 const prisma = new PrismaClient({ adapter });
+console.timeEnd('PrismaInit');
 
 module.exports = prisma;
